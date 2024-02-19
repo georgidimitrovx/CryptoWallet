@@ -1,0 +1,6 @@
+@CryptoWallet.Server_HostAddress = http://localhost:5215
+
+GET {{CryptoWallet.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
