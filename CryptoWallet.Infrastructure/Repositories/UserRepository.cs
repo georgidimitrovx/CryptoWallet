@@ -1,33 +1,28 @@
 ﻿using CryptoWallet.Domain.Entities;
 using CryptoWallet.Domain.RepositoryContracts;
+using Microsoft.EntityFrameworkCore;
 
 namespace CryptoWallet.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        public Task AddAsync(User user)
+        private readonly AppDbContext _context;
+
+        public UserRepository(AppDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task DeleteAsync(User user)
+        public async Task<User> CreateAsync(User user)
         {
-            throw new NotImplementedException();
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            return user;
         }
 
-        public Task<IEnumerable<User>> GetAllAsync()
+        public async Task<User> GetByEmailAsync(string email)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<User> GetByIdAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(User user)
-        {
-            throw new NotImplementedException();
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
     }
 }

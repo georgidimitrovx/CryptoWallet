@@ -3,8 +3,30 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
+import { ThemeProvider, createTheme } from '@mui/material';
+
+const darkTheme = createTheme({
+    palette: {
+        mode: 'dark', // Switches the theme to dark mode
+    }
+    //components: {
+    //    MuiContainer: {
+    //        styleOverrides: {
+    //            root: {
+    //                '@media (min-width:0px)': {
+    //                    paddingLeft: '0px', // Change as needed
+    //                    paddingRight: '0px', // Change as needed
+    //                },
+    //            },
+    //        },
+    //    },
+    //},
+});
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+    <React.StrictMode>
+        <ThemeProvider theme={darkTheme}>
+            <App />
+        </ThemeProvider>
+    </React.StrictMode>,
 )
