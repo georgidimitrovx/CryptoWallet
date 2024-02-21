@@ -13,17 +13,14 @@ namespace CryptoWallet.Server.Controllers
         private readonly IUserService _userService;
         private readonly IAssetService _assetService;
         private readonly ICoinloreService _coinloreService;
-        private readonly ITransactionManager _transactionManager;
 
         public AssetController(IUserService userService,
             IAssetService assetService,
-            ICoinloreService coinloreService,
-            ITransactionManager transactionManager)
+            ICoinloreService coinloreService)
         {
             _userService = userService;
             _assetService = assetService;
             _coinloreService = coinloreService;
-            _transactionManager = transactionManager;
         }
 
         [HttpGet]
@@ -50,48 +47,31 @@ namespace CryptoWallet.Server.Controllers
             return Ok(resultRecords);
         }
 
-        [HttpPost("refresh")]
-        public async Task<IActionResult> RefreshAsync(string email)
+        [HttpPost("getRealtimeAssets")]
+        public async Task<IActionResult> GetRealtimeUserAssetsAsync(string email)
         {
-            if (!await _coinloreService.SaveAllTickerIdsAsync())
-                return BadRequest(new { message = "Failed to load data from Coinlore." });
-
             var user = await _userService.GetByEmailAsync(email);
             if (user == null)
                 return BadRequest(new { message = "Invalid user credentials." });
 
-            var records = await _assetService.GetAllByUserIdAsync(user.Id);
-            if (records.Count() == 0)
+            var loadedRecords = await _assetService.GetAllByUserIdAsync(user.Id);
+            if (loadedRecords.Count() == 0)
                 return NotFound(new { message = "No files found" });
 
-            foreach (var asset in records)
+            var resultRecords = new AssetDto[loadedRecords.Count()];
+            var dateNow = DateTime.UtcNow;
+
+            for (int i = 0; i < loadedRecords.Count(); i++)
             {
-                asset.Price = await _coinloreService.GetTickerPriceAsync(asset.Ticker);
-                asset.Id = 0;
-                asset.PurchasedOn = DateTime.UtcNow;
+                resultRecords[i] = new AssetDto();
+                resultRecords[i].Ticker = loadedRecords[i].Ticker;
+                resultRecords[i].Amount = loadedRecords[i].Amount;
+                resultRecords[i].PurchasedOn = dateNow;
+                resultRecords[i].Price = await _coinloreService.GetTickerPriceAsync(
+                    loadedRecords[i].Ticker);
             }
 
-            try
-            {
-                _transactionManager.BeginTransaction();
-
-                foreach (var asset in records)
-                {
-                    if (await _assetService.AddAsync(asset) == null)
-                        throw new Exception("Error adding asset");
-                }
-
-                await _transactionManager.CommitAsync();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-                _transactionManager.Rollback();
-                return BadRequest(new { message = "Error in transaction" });
-            }
-
-            return Ok();
-
+            return Ok(resultRecords);
         }
     }
 }

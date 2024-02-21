@@ -2,7 +2,7 @@
 using CryptoWallet.Application.Services;
 using CryptoWallet.Domain.Entities;
 using CryptoWallet.Domain.RepositoryContracts;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace CryptoWallet.Infrastructure.ExternalServices
 {
@@ -15,14 +15,9 @@ namespace CryptoWallet.Infrastructure.ExternalServices
             _coinloreRepository = coinloreRepository;
         }
 
-        public async Task<bool> SaveAllTickerIdsAsync()
+        public async Task<int> FetchTickerExternalIdAsync(string ticker)
         {
-            var coinloreRecord = await _coinloreRepository.GetFirstAsync();
-
-            // Don't get new values if cache is fresh
-            if (coinloreRecord != null && coinloreRecord.UpdateTime > DateTime.UtcNow.AddHours(-1))
-                return true;
-
+            var externalId = -1;
             var apiUrl = "https://api.coinlore.net/api/tickers/?start=";
             var startId = 0;
 
@@ -32,69 +27,69 @@ namespace CryptoWallet.Infrastructure.ExternalServices
                 {
                     while (true)
                     {
-                        var response = await httpClient.GetStringAsync(apiUrl + startId.ToString());
-                        var dataResponse = JsonSerializer.Deserialize<CoinloreResponse>(response);
-
-                        if (dataResponse == null ||
-                            dataResponse.data == null ||
-                            dataResponse.data.Length == 0)
-                        {
-                            break;
-                        }
-
-                        foreach (var coinDto in dataResponse.data)
-                        {
-                            if (coinDto.Symbol == "")
-                                continue;
-
-                            var coin = await _coinloreRepository.GetByExternalIdAsync(coinDto.Id);
-
-                            if (coin == null)
-                            {
-                                coin = new Coinlore();
-                                coin.Ticker = coinDto.Symbol;
-                                coin.ExternalId = coinDto.Id;
-                                coin.UpdateTime = DateTime.UtcNow;
-                                await _coinloreRepository.AddAsync(coin);
-                            }
-                            else
-                            {
-                                coin.Ticker = coinDto.Symbol;
-                                coin.ExternalId = coinDto.Id;
-                                coin.UpdateTime = DateTime.UtcNow;
-                                await _coinloreRepository.UpdateAsync(coin);
-                            }
-                        }
-
+                        var jsonString = await httpClient.GetStringAsync(apiUrl + startId.ToString());
                         startId += 100;
+                        var coinloreResponse = JsonConvert.DeserializeObject<CoinloreResponse>(
+                            jsonString);
+
+                        if (coinloreResponse == null ||
+                            coinloreResponse.Data == null)
+                        {
+                            continue;
+                        }
+
+                        if (coinloreResponse.Data.Count == 0)
+                            break;
+
+                        var coin = coinloreResponse.GetCoinInfo(ticker);
+                        if (coin == null)
+                            continue;
+
+                        externalId = int.Parse(coin.Id);
+                        break;
                     }
                 }
                 catch (HttpRequestException e)
                 {
                     Console.WriteLine($"Error fetching data: {e.Message}");
-                    return false;
+                    return -1;
                 }
             }
 
-            return true;
+            return externalId;
         }
 
         public async Task<int> GetIdByTickerAsync(string ticker)
         {
-            await SaveAllTickerIdsAsync();
+            var coin = await _coinloreRepository.GetByTickerAsync(ticker);
 
-            var coinlore = await _coinloreRepository.GetByTickerAsync(ticker);
+            if (coin == null || coin.UpdateTime < DateTime.UtcNow.AddHours(-1))
+            {
+                var externalId = await FetchTickerExternalIdAsync(ticker);
 
-            if (coinlore == null)
-                return -1;
+                if (coin == null)
+                {
+                    coin = new Coinlore();
+                    coin.Ticker = ticker;
+                    coin.ExternalId = externalId;
+                    coin.UpdateTime = DateTime.UtcNow;
+                    await _coinloreRepository.AddAsync(coin);
+                }
+                else
+                {
+                    coin.ExternalId = externalId;
+                    coin.UpdateTime = DateTime.UtcNow;
+                    await _coinloreRepository.UpdateAsync(coin);
+                }
+            }
 
-            return coinlore.ExternalId;
+            return coin.ExternalId;
         }
 
         public async Task<double> GetTickerPriceAsync(string ticker)
         {
-            int id = await GetIdByTickerAsync(ticker);
-            var apiUrl = $"https://api.coinlore.net/api/ticker/?id={id}";
+            int externalId = await GetIdByTickerAsync(ticker);
+            var apiUrl = $"https://api.coinlore.net/api/ticker/?id={externalId}";
             var price = 0.0;
 
             using (var httpClient = new HttpClient())
@@ -104,10 +99,10 @@ namespace CryptoWallet.Infrastructure.ExternalServices
                     var response = await httpClient.GetStringAsync(apiUrl);
 
                     // Assuming the API returns a JSON array
-                    var data = JsonSerializer.Deserialize<CoinloreDto[]>(response);
+                    var data = JsonConvert.DeserializeObject<CoinloreDto[]>(response);
 
                     if (data == null || data.Length == 0)
-                        throw new Exception("No data");
+                        throw new Exception("No data found for ticker");
 
                     price = data[0].Price_usd;
                 }

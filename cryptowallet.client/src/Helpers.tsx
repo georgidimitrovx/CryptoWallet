@@ -24,3 +24,7 @@ export function hasUserSession() {
 
     return true;
 }
+
+export function toLocaleFraction(num: number) {
+    return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}

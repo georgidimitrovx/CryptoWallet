@@ -2,7 +2,7 @@
 {
     public interface ICoinloreService
     {
-        Task<bool> SaveAllTickerIdsAsync();
+        Task<int> FetchTickerExternalIdAsync(string ticker);
         Task<double> GetTickerPriceAsync(string ticker);
     }
 }
