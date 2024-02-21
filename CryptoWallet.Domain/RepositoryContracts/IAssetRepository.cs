@@ -4,10 +4,8 @@ namespace CryptoWallet.Domain.RepositoryContracts
 {
     public interface IAssetRepository
     {
-        Task<Asset> GetByIdAsync(Guid id);
         Task<IEnumerable<Asset>> GetAllAsync();
-        Task AddAsync(Asset asset);
-        Task UpdateAsync(Asset asset);
-        Task DeleteAsync(Asset asset);
+        Task<Asset> AddAsync(Asset asset);
+        Task<bool> DeleteAllByUserIdAsync(int userId);
     }
 }

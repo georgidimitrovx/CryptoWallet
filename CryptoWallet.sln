@@ -3,15 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoWallet.Server", "CryptoWallet.Server\CryptoWallet.Server.csproj", "{85F3B36B-09D1-483A-9AA7-5968D0787DBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoWallet.Server", "CryptoWallet.Server\CryptoWallet.Server.csproj", "{85F3B36B-09D1-483A-9AA7-5968D0787DBB}"
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "cryptowallet.client", "cryptowallet.client\cryptowallet.client.esproj", "{5104EA27-E7AC-48B2-A2BF-3C3B34457E06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoWallet.Domain", "CryptoWallet.Domain\CryptoWallet.Domain.csproj", "{35429DC6-9A6A-4C40-8323-D8E920D4D58A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoWallet.Domain", "CryptoWallet.Domain\CryptoWallet.Domain.csproj", "{35429DC6-9A6A-4C40-8323-D8E920D4D58A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoWallet.Application", "CryptoWallet.Application\CryptoWallet.Application.csproj", "{5D22F226-D499-4068-A46E-690F890BBE0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoWallet.Application", "CryptoWallet.Application\CryptoWallet.Application.csproj", "{5D22F226-D499-4068-A46E-690F890BBE0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoWallet.Infrastructure", "CryptoWallet.Infrastructure\CryptoWallet.Infrastructure.csproj", "{1A046842-B411-4678-ACC2-8B1B92AA4A76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoWallet.Infrastructure", "CryptoWallet.Infrastructure\CryptoWallet.Infrastructure.csproj", "{1A046842-B411-4678-ACC2-8B1B92AA4A76}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5D22F226-D499-4068-A46E-690F890BBE0B} = {5D22F226-D499-4068-A46E-690F890BBE0B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,9 +12,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CryptoWallet.Application\CryptoWallet.Application.csproj" />
     <ProjectReference Include="..\CryptoWallet.Domain\CryptoWallet.Domain.csproj" />
   </ItemGroup>
 

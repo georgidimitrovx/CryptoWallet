@@ -15,15 +15,16 @@ namespace CryptoWallet.Infrastructure.Repositories
 
         public async Task<FileImport> CreateAsync(FileImport file)
         {
-            _context.FileImports.Add(file);
+            var inserted = _context.FileImports.Add(file);
             await _context.SaveChangesAsync();
-            return file;
+            return inserted.Entity;
         }
 
         public async Task<IEnumerable<FileImport>> GetAllByUserIdAsync(int userId)
         {
             return await _context.FileImports
                 .Where(file => file.UserId == userId)
+                .OrderByDescending(file => file.UploadTime)
                 .ToListAsync();
         }
 
@@ -31,6 +32,12 @@ namespace CryptoWallet.Infrastructure.Repositories
         {
             return await _context.FileImports
                 .FirstOrDefaultAsync(file => file.UserId == userId && file.FileName == fileName);
+        }
+
+        public async Task<FileImport> GetFirstByUserIdAsync(int userId)
+        {
+            return await _context.FileImports
+                .FirstOrDefaultAsync(file => file.UserId == userId);
         }
     }
 }

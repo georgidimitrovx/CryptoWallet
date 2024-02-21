@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -10,25 +9,22 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import Chart from '../components/Chart';
 import { Button, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 //import Deposits from './Deposits';
 //import Orders from './Orders';
 import CryptoWalletLogo from '../assets/cryptoWalletLogo.svg'
 import { useEffect, useState } from 'react';
 import { hasUserSession } from '../Helpers';
-import HideSourceIcon from '@mui/icons-material/HideSource';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
 import { ImportsTab } from '../components/ImportsTab';
 import { AssetsTab } from '../components/AssetsTab';
+import { DashboardTab } from '../components/DashboardTab';
 
 function Copyright(props: any) {
     return (
@@ -94,7 +90,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function DashboardPage() {
     const [showPage, setShowPage] = useState(false);
     const [open, setOpen] = useState(true);
-    const [selectedTab, setSelectedTab] = React.useState("Dashboard");
     const navigate = useNavigate();
 
     const toggleToolbarOnResize = () => {
@@ -124,12 +119,6 @@ export default function DashboardPage() {
         localStorage.removeItem('jwtTokenExpiry');
         navigate('/');
     };
-
-    const [hasAssets, setHasAssets] = React.useState(false);
-
-    useEffect(() => {
-        // todo load assets from srv
-    }, []);
 
     return showPage ? (
         <Box sx={{ display: 'flex' }}>
@@ -193,19 +182,19 @@ export default function DashboardPage() {
                 </Toolbar>
                 <Divider />
                 <List component="nav">
-                    <ListItemButton onClick={() => setSelectedTab("Dashboard")}>
+                    <ListItemButton href="/dashboard">
                         <ListItemIcon>
                             <DashboardIcon />
                         </ListItemIcon>
                         <ListItemText primary="Dashboard" />
                     </ListItemButton>
-                    <ListItemButton onClick={() => setSelectedTab("Assets")}>
+                    <ListItemButton href="/dashboard/assets">
                         <ListItemIcon>
                             <CurrencyBitcoinIcon />
                         </ListItemIcon>
                         <ListItemText primary="Assets" />
                     </ListItemButton>
-                    <ListItemButton onClick={() => setSelectedTab("Imports")}>
+                    <ListItemButton href="/dashboard/imports">
                         <ListItemIcon>
                             <CloudUploadIcon />
                         </ListItemIcon>
@@ -227,40 +216,11 @@ export default function DashboardPage() {
             >
                 <Toolbar />
                 <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                    {selectedTab == "Dashboard" ? (
-                        <Grid container spacing={3}>
-                            {/* Chart */}
-                            {hasAssets ? (
-                                <Grid item xs={12}>
-                                    <Paper
-                                        sx={{
-                                            p: 2,
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            height: 480,
-                                        }}
-                                    >
-                                        <Chart />
-                                    </Paper>
-                                </Grid>
-                            ) : (
-                                <Grid item xs={12} sx={{ marginTop: 5 }} >
-                                    <HideSourceIcon fontSize="large" />
-                                    <Typography variant="body1" color="text.secondary" align="center" sx={{ marginTop: 2 }}>
-                                        No assets detected
-                                    </Typography>
-                                    <Typography variant="body1" color="text.secondary" align="center" sx={{ marginTop: 2 }}>
-                                        <Link color="inherit" onClick={() => setSelectedTab("Imports")} href="#">
-                                            Import assets to get started
-                                        </Link>{' '}
-                                    </Typography>
-                                </Grid>
-                            )}
-                        </Grid>
-                    )
-                        : selectedTab == "Assets" ? <AssetsTab />
-                            : selectedTab == "Imports" ? <ImportsTab />
-                                : null}
+                    <Routes>
+                        <Route path="/" element={<DashboardTab />} />
+                        <Route path="/assets" element={<AssetsTab />} />
+                        <Route path="/imports" element={<ImportsTab />} />
+                    </Routes>
                 </Container>
                 <Copyright sx={{ pt: 4, marginBottom: 5 }} />
             </Box>

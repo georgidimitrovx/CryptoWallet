@@ -6,6 +6,7 @@ namespace CryptoWallet.Domain.RepositoryContracts
     {
         Task<FileImport> CreateAsync(FileImport file);
         Task<IEnumerable<FileImport>> GetAllByUserIdAsync(int userId);
+        Task<FileImport> GetFirstByUserIdAsync(int userId);
         Task<FileImport> GetByUserIdAndFileNameAsync(int userId, string fileName);
     }
 }

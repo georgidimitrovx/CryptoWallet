@@ -8,19 +8,16 @@ import { ThemeProvider, createTheme } from '@mui/material';
 const darkTheme = createTheme({
     palette: {
         mode: 'dark', // Switches the theme to dark mode
-    }
-    //components: {
-    //    MuiContainer: {
-    //        styleOverrides: {
-    //            root: {
-    //                '@media (min-width:0px)': {
-    //                    paddingLeft: '0px', // Change as needed
-    //                    paddingRight: '0px', // Change as needed
-    //                },
-    //            },
-    //        },
-    //    },
-    //},
+    },
+    components: {
+        MuiBackdrop: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)', // Adjust the alpha to make it less dark
+                },
+            },
+        },
+    },
 });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

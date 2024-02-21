@@ -15,9 +15,9 @@ namespace CryptoWallet.Infrastructure.Repositories
 
         public async Task<User> CreateAsync(User user)
         {
-            _context.Users.Add(user);
+            var inserted = _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            return user;
+            return inserted.Entity;
         }
 
         public async Task<User> GetByEmailAsync(string email)

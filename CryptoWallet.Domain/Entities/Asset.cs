@@ -10,7 +10,8 @@ namespace CryptoWallet.Domain.Entities
         public int UserId { get; set; }
         public string Ticker { get; set; }
         public DateTime PurchasedOn { get; set; }
-        public double PurchasedAmount { get; set; }
+        public double Amount { get; set; }
+        public double Price { get; set; }
 
         public User User { get; set; }
     }

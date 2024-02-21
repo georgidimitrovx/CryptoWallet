@@ -15,20 +15,28 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
             b => b.MigrationsAssembly("CryptoWallet.Server")));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler =
+        System.Text.Json.Serialization.ReferenceHandler.Preserve;
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-//builder.Services.AddScoped<IAssetRepository, AssetImportRepository>();
 builder.Services.AddScoped<IFileImportRepository, FileImportRepository>();
+builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFileImportService, FileImportService>();
+builder.Services.AddScoped<IAssetService, AssetService>();
+builder.Services.AddScoped<ITransactionManager, TransactionManager>();
+builder.Services.AddScoped<IImportCoordinatorService, ImportCoordinatorService>();
 
 // External API
 //builder.Services.AddHttpClient<CoinloreService>(client =>
