@@ -56,9 +56,7 @@ namespace CryptoWallet.Server.Controllers
         {
             var user = await _userService.GetByEmailAsync(email);
             if (user == null)
-            {
-                return Unauthorized(new { message = "Invalid user credentials." });
-            }
+                return BadRequest(new { message = "Invalid user credentials." });
 
             var records = await _fileImportService.GetAllByUserIdAsync(user.Id);
             if (records.Count() == 0)

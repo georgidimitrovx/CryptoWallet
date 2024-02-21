@@ -1,6 +1,7 @@
 using CryptoWallet.Application.Services;
 using CryptoWallet.Domain.RepositoryContracts;
 using CryptoWallet.Infrastructure;
+using CryptoWallet.Infrastructure.ExternalServices;
 using CryptoWallet.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -29,14 +30,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFileImportRepository, FileImportRepository>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
+builder.Services.AddScoped<ICoinloreRepository, CoinloreRepository>();
 
 // Services
+builder.Services.AddScoped<IHeartbeatService, HeartbeatService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFileImportService, FileImportService>();
 builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<ITransactionManager, TransactionManager>();
 builder.Services.AddScoped<IImportCoordinatorService, ImportCoordinatorService>();
+builder.Services.AddScoped<ICoinloreService, CoinloreService>();
 
 // External API
 //builder.Services.AddHttpClient<CoinloreService>(client =>

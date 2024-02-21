@@ -28,9 +28,12 @@ namespace CryptoWallet.Infrastructure.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<Asset>> GetAllAsync()
+        public async Task<List<Asset>> GetAllByUserIdAsync(int userId)
         {
-            throw new NotImplementedException();
+            return await _context.Assets
+                .Where(asset => asset.UserId == userId)
+                //.OrderByDescending(asset => asset.Id)
+                .ToListAsync();
         }
     }
 }

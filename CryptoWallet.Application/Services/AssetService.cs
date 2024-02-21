@@ -56,5 +56,10 @@ namespace CryptoWallet.Application.Services
 
             return assets;
         }
+
+        public async Task<List<Asset>> GetAllByUserIdAsync(int userId)
+        {
+            return await _assetRepository.GetAllByUserIdAsync(userId);
+        }
     }
 }

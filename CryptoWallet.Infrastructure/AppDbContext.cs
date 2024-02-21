@@ -13,5 +13,6 @@ namespace CryptoWallet.Infrastructure
         public DbSet<User> Users { get; set; }
         public DbSet<Asset> Assets { get; set; }
         public DbSet<FileImport> FileImports { get; set; }
+        public DbSet<Coinlore> Coinlore { get; set; }
     }
 }

@@ -2,7 +2,7 @@ import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, Di
 import { ChangeEvent, useEffect, useState } from "react";
 import { getEndpoint } from "../Helpers";
 
-interface LoadedAsset {
+interface LoadedFile {
     name: string,
     size: number,
     uploadTime: string
@@ -14,7 +14,7 @@ export function ImportsTab() {
 
     const [isUploading, setIsUploading] = useState(false);
     const [uploadMessage, setUploadMessage] = useState("");
-    const [loadedAssets, setLoadedAssets] = useState<LoadedAsset[]>();
+    const [loadedFiles, setLoadedFiles] = useState<LoadedFile[]>();
 
     const [openDialog, setOpenDialog] = useState(false);
     const [dialogTitle, setDialogTitle] = useState("");
@@ -40,7 +40,7 @@ export function ImportsTab() {
             })
             .then(data => {
                 //console.log(data);
-                setLoadedAssets(data);
+                setLoadedFiles(data);
                 setIsLoadingHistory(false);
             })
             .catch(error => {
@@ -78,19 +78,18 @@ export function ImportsTab() {
         })
             .then(async (response) => {
                 if (!response.ok) {
+                    console.error(response);
                     const errorResponse = await response.json();
-                    console.error(errorResponse);
                     throw new Error(errorResponse.message || 'An error occurred');
                 }
-                console.error(response);
                 return response.json();
             })
             .then(data => {
-                console.error(data);
                 setIsUploading(false);
                 setUploadMessage(data.message);
             })
             .catch(error => {
+                console.error(error);
                 setIsUploading(false);
                 setUploadMessage(`Error importing file: ${error.message}`);
             });
@@ -151,7 +150,7 @@ export function ImportsTab() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {loadedAssets ? loadedAssets.map((row) => (
+                            {loadedFiles ? loadedFiles.map((row) => (
                                 <TableRow
                                     key={row.name}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

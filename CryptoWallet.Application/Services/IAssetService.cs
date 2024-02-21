@@ -7,5 +7,6 @@ namespace CryptoWallet.Application.Services
         Task<bool> DeleteAllByUserIdAsync(int userId);
         List<Asset>? ConvertFileToAssets(byte[] bytes);
         Task<Asset> AddAsync(Asset asset);
+        Task<List<Asset>> GetAllByUserIdAsync(int userId);
     }
 }

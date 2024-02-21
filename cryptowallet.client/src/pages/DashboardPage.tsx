@@ -13,9 +13,7 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { Button, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
-//import Deposits from './Deposits';
-//import Orders from './Orders';
+import {  Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import CryptoWalletLogo from '../assets/cryptoWalletLogo.svg'
 import { useEffect, useState } from 'react';
 import { hasUserSession } from '../Helpers';
@@ -91,6 +89,7 @@ export default function DashboardPage() {
     const [showPage, setShowPage] = useState(false);
     const [open, setOpen] = useState(true);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const toggleToolbarOnResize = () => {
         setOpen(window.innerWidth > 600);
@@ -120,6 +119,18 @@ export default function DashboardPage() {
         navigate('/');
     };
 
+    const getRouteName = () => {
+        var path = location.pathname.split('/');
+        var res = "";
+        for (var i = 0; i < path.length; i++) {
+            res += path[i].charAt(0).toUpperCase() + path[i].substring(1);
+            if (i > 0 && i < path.length - 1)
+                res += " / ";
+        }
+
+        return res;
+    }
+
     return showPage ? (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -148,7 +159,7 @@ export default function DashboardPage() {
                         noWrap
                         sx={{ flexGrow: 1 }}
                     >
-                        Dashboard
+                        {getRouteName()}
                     </Typography>
                     {/*<IconButton color="inherit">*/}
                     {/*    <Badge badgeContent={4} color="secondary">*/}
