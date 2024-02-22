@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { LineChart, axisClasses } from '@mui/x-charts';
 import { ChartsTextStyle } from '@mui/x-charts/ChartsText';
-import { Typography } from '@mui/material';
 
 // Generate Sales Data
 function createData(
@@ -18,6 +17,7 @@ interface LoadedAsset {
     amount: number,
     price: number,
 }
+
 interface ChartProps {
     assets: LoadedAsset[][];
 }

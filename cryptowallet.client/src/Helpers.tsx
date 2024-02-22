@@ -4,7 +4,7 @@ function isProductionEnvironment() {
 
 export function getEndpoint() {
     if (isProductionEnvironment())
-        return ''; // todo
+        return 'https://cryptowalletbg.azurewebsites.net/';
     else
         return 'https://localhost:7018/';
 }

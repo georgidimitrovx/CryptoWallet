@@ -83,7 +83,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOriginProduction",
         builder =>
         {
-            builder.WithOrigins("")
+            builder.WithOrigins("https://cryptowalletbg.azurewebsites.net")
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });

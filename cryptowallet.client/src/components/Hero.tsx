@@ -6,6 +6,7 @@ import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import DashboardPreview from '../assets/DashboardPreview.png';
 
 export default function Hero() {
     return (
@@ -97,10 +98,10 @@ export default function Hero() {
                         alignSelf: 'center',
                         height: { xs: 200, sm: 700 },
                         width: '100%',
-                        backgroundImage:
-                            theme.palette.mode === 'light'
-                                ? 'url("/static/images/templates/templates-images/hero-light.png")'
-                                : 'url("/static/images/templates/templates-images/hero-dark.png")',
+                        backgroundImage: `url(${DashboardPreview})`,
+                            //theme.palette.mode === 'light'
+                            //    ? 'url("/static/images/templates/templates-images/hero-light.png")'
+                            //    : 'url("/static/images/templates/templates-images/hero-dark.png")',
                         backgroundSize: 'cover',
                         borderRadius: '10px',
                         outline: '1px solid',
